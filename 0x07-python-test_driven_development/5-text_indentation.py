@@ -1,25 +1,56 @@
 #!/usr/bin/python3
-"""
-This is the text_indentation module.
+"""This module contains a function that prints a text with 2 new lines
+after each of these characters:
+    ``.``, ``?`` and ``:``
 
-This module supplies one function, text_indentation().
+Attributes:
+    text_indentation (def): print a text with 2 new lines
+                            after each of these characters:
+                            ``.``, ``?`` and ``:``
 """
 
 
 def text_indentation(text):
-    """
-    Print a text with 2 new lines after each of these characters: ., ? and :.
+    """Print a text with 2 new lines after each of these characters:
+    ``.``, ``?`` and ``:``
 
     Args:
-        text (str): the text to print.
-    """
-    if type(text) is not str:
-        raise TypeError("text must be a string")
+        text (str): string to print in a specail way
 
-    line = ""
-    for c in range(len(text)):
-        line += text[c]
-        if text[c] in ".?:":
-            print((line + '\n').lstrip(' '))
-            line = ""
-    print(line.lstrip(' '), end='')
+    Note:
+        text must be a string, otherwise a ``TypeError`` exception is
+        raised
+
+    Usage:
+        >>> text_indentation("hello.world?foo:time")
+        ... #doctest: +REPORT_NDIFF
+        hello.
+        <BLANKLINE>
+        world?
+        <BLANKLINE>
+        foo:
+        <BLANKLINE>
+        time
+        """
+
+    if not isinstance(text, str):
+        raise TypeError('text must be a string')
+    else:
+        charset = ['.', '?', ':']
+        step = 0
+        text_len = len(text)
+        while step < text_len:
+            if text[step] in charset:
+                print('{}\n\n'.format(text[step]), end='')
+                step += 1
+                if step >= text_len:
+                    break
+                # move to the next none-space character
+                if text[step] == ' ':
+                    while (text[step] == ' '):
+                        step += 1
+                        if step >= text_len:
+                            break
+            else:
+                print(str(text[step]), end='')
+                step += 1

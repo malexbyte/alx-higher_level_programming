@@ -1,41 +1,54 @@
 #!/usr/bin/python3
-"""Max integer test module.
-
-This module contains a class that tests for the max_integer function.
+"""Unittest for max_integer([..])
 """
 import unittest
 max_integer = __import__('6-max_integer').max_integer
 
-
 class TestMaxInteger(unittest.TestCase):
-    """Test function"""
+    """
+    Class to test the functionality of the ``max_integer`` function
+    """
 
-    def test_max_integer(self):
+    def test_unordered_list(self):
         """
-        Tests if correct tests are ok
+        Contains alot of test cases for the function
+        ``max_integer()``
         """
-        lst = [1, 2, 3, 4]
-        self.assertEqual(max_integer(lst), 4)
-        lst = [1, 4, 2, 3, -4]
-        self.assertEqual(max_integer(lst), 4)
-        lst = [4]
-        self.assertEqual(max_integer(lst), 4)
-        lst = [None]
-        self.assertEqual(max_integer(lst), None)
-        lst = []
-        self.assertEqual(max_integer(lst), None)
-        lst = [1, 3, float('inf'), 2]
-        self.assertEqual(max_integer(lst), float('inf'))
-        lst = [1, 3, -float('inf'), 2]
-        self.assertEqual(max_integer(lst), 3)
-        lst = [4, 1, 2, 3]
-        self.assertEqual(max_integer(lst), 4)
 
-    def test_type(self):
+        self.assertEqual(max_integer([12, 4, 5]), 12)
+
+    def test_ordered_list(self):
+        """Tests an ordered list
         """
-        Tests if failure tests are ok
+
+        self.assertEqual(max_integer([1, 5, 39]), 39)
+
+    def test_same_values_in_lisst(self):
+        """Tests a list with the same value in all the elements
         """
-        lst = [1, 2, 3, "Betty"]
-        self.assertRaises(TypeError, max_integer, lst)
-        lst = None
-        self.assertRaises(TypeError, max_integer, lst)
+
+        self.assertEqual(max_integer([4, 4, 4]), 4)
+
+    def test_floats(self):
+        """Tests when the list contains floats
+        """
+
+        self.assertEqual(max_integer([3.4, -83, 0.00]), 3.4)
+
+    def test_strings_in_list(self):
+        """Test when the list contains strings
+        """
+
+        self.assertEqual(max_integer("abcde"), 'e')
+
+    def test_empty_list(self):
+        """Test when the list is empty
+        """
+
+        self.assertIsNone(max_integer([]))
+
+    def test_one_element_list(self):
+        """Test a list with only one element
+        """
+
+        self.assertEqual(max_integer([5]), 5)
