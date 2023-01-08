@@ -1,121 +1,67 @@
 #!/usr/bin/python3
-"""This module contains a function that multiplies matrices
-
-matrix_mul (def): multiplies two matrices together
-"""
+"""Defines a matrix multiplication function."""
 
 
 def matrix_mul(m_a, m_b):
-    """Multiply two matrices
+    """Multiply two matrices.
 
     Args:
-        m_a (list of lists): first matrix
-        m_b (list of lists): second matrix
+        m_a (list of lists of ints/floats): The first matrix.
+        m_b (list of lists of ints/floats): The second matrix.
+    Raises:
+        TypeError: If either m_a or m_b is not a list of lists of ints/floats.
+        TypeError: If either m_a or m_b is empty.
+        TypeError: If either m_a or m_b has different-sized rows.
+        ValueError: If m_a and m_b cannot be multiplied.
+    Returns:
+        A new matrix representing the multiplication of m_a by m_b.
     """
 
-    # Error messages
+    if m_a == [] or m_a == [[]]:
+        raise ValueError("m_a can't be empty")
+    if m_b == [] or m_b == [[]]:
+        raise ValueError("m_b can't be empty")
 
-    def err_list(x=str()):
-        """Return error message including the argument in the message
-        """
+    if not isinstance(m_a, list):
+        raise TypeError("m_a must be a list")
+    if not isinstance(m_b, list):
+        raise TypeError("m_b must be a list")
 
-        return "{} must be a list".format(str(x))
+    if not all(isinstance(row, list) for row in m_a):
+        raise TypeError("m_a must be a list of lists")
+    if not all(isinstance(row, list) for row in m_b):
+        raise TypeError("m_b must be a list of lists")
 
-    def err_list_of_lists(x=str()):
-        """Return error message including the argument in the message
-        """
+    if not all((isinstance(ele, int) or isinstance(ele, float))
+               for ele in [num for row in m_a for num in row]):
+        raise TypeError("m_a should contain only integers or floats")
+    if not all((isinstance(ele, int) or isinstance(ele, float))
+               for ele in [num for row in m_b for num in row]):
+        raise TypeError("m_b should contain only integers or floats")
 
-        return "{} must be a list of lists".format(str(x))
+    if not all(len(row) == len(m_a[0]) for row in m_a):
+        raise TypeError("each row of m_a must should be of the same size")
+    if not all(len(row) == len(m_b[0]) for row in m_b):
+        raise TypeError("each row of m_b must should be of the same size")
 
-    def err_empty(x=str()):
-        """Return error message including the argument in the message
-        """
+    if len(m_a[0]) != len(m_b):
+        raise ValueError("m_a and m_b can't be multiplied")
 
-        return "{} can't be empty".format(str(x))
-
-    def err_not_int_float(x=str()):
-        """Return error message including the argument in the message
-        """
-
-        return "{} should contain only integers or floats".format(str(x))
-
-    def err_unequal_row(x=str()):
-        """Return error message including the argument in the message
-        """
-
-        return "each row of {} must be of the same size".format(str(x))
-
-    def err_incompatible(x=str(), y=str()):
-        """Return error message including the argument in the message
-        """
-
-        return "{} and {} can't be multiplied".format(str(x), str(y))
-
-    # Validate that both arguments are lists
-    if (not isinstance(m_a, list)):
-        raise TypeError(err_list("m_a"))
-
-    if (not isinstance(m_b, list)):
-        raise TypeError(err_list("m_b"))
-
-    # Validate that both arguments are list of lists
-    for row in m_a:
-        if not isinstance(row, list):
-            raise TypeError(err_list_of_lists("m_a"))
-
-    for row in m_b:
-        if not isinstance(row, list):
-            raise TypeError(err_list_of_lists("m_b"))
-
-    # Validate that both arguments are not emtpy
-    if (len(m_a) == 0) or (len(m_a[0]) == 0):
-        raise ValueError(err_empty("m_a"))
-
-    if (len(m_b) == 0) or (len(m_b[0]) == 0):
-        raise ValueError(err_empty("m_b"))
-
-    # Validate that both argument are lists of lists of integers/floats
-    for row in m_a:
-        for element in row:
-            if ((not isinstance(element, int)) and
-                    (not isinstance(element, float))):
-                raise TypeError(err_not_int_float("m_a"))
-
-    for row in m_b:
-        for element in row:
-            if ((not isinstance(element, int)) and
-                    (not isinstance(element, float))):
-                raise TypeError(err_not_int_float("m_b"))
-
-    # Validate each argument is a rectangle
-    # That is, each argument has rows of equal lengths
-    m_a_row_len = -1
-    for row in m_a:
-        if m_a_row_len == -1:
-            m_a_row_len = len(row)
-        elif len(row) != m_a_row_len:
-            raise TypeError(err_unequal_row("m_a"))
-
-    m_b_row_len = -1
-    for row in m_b:
-        if m_b_row_len == -1:
-            m_b_row_len = len(row)
-        elif len(row) != m_b_row_len:
-            raise TypeError(err_unequal_row("m_b"))
-
-    # Validate that both arguments can be multiplied
-    if (len(m_a[0]) != len(m_b)):
-        raise ValueError(err_incompatible("m_a", "m_b"))
-
-    # Multiply both matrices
-    result_matrix = []
-    for row in range(len(m_a)):
+    inverted_b = []
+    for r in range(len(m_b[0])):
         new_row = []
-        for col in range(len(m_b[0])):
-            sum_product = 0
-            for step in range(len(m_b)):
-                sum_product += m_a[row][step] * m_b[step][col]
-            new_row.append(sum_product)
-        result_matrix.append(new_row)
+        for c in range(len(m_b)):
+            new_row.append(m_b[c][r])
+        inverted_b.append(new_row)
 
-    return (result_matrix)
+    new_matrix = []
+    for row in m_a:
+        new_row = []
+        for col in inverted_b:
+            prod = 0
+            for i in range(len(inverted_b[0])):
+                prod += row[i] * col[i]
+            new_row.append(prod)
+        new_matrix.append(new_row)
+
+    return new_matrix
